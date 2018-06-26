@@ -14,19 +14,17 @@
 	src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body ng-app="app" ng-controller="home as home">
-	<h1>Login</h1>
+	<h1>Spring Security TFM OAuth2 example</h1>
 	<div class="container" ng-show="!home.authenticated">
 		<div>
-			With Google: <a href="/connect/google">click here</a>
+			<a href="/connect/google">Login with Google</a>
 		</div>
 		<div>
-			With Facebook: <a href="/connect/facebook">click here</a>
+			<a href="/connect/facebook">Login with Facebook</a>
 		</div>
 	</div>
 	<div class="container" ng-show="home.authenticated">
 		Logged in as: <span ng-bind="home.user"></span>
-	</div>
-	<div>
 		<button ng-click="home.logout()" class="btn btn-primary">Logout</button>
 	</div>
 </body>
