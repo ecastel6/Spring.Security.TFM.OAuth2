@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticat
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,17 +48,14 @@ public class Oauth2SecurityConfig extends WebSecurityConfigurerAdapter
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.antMatcher("/**")
-            .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
-            .authorizeRequests()
-                .antMatchers("/", "/connect**", "/webjars/**")
-                .permitAll()
-            .anyRequest()
-                .authenticated()
-            .and()
-                .logout()
-            .logoutSuccessUrl("/").permitAll().and().csrf()
-            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+        // @formatter:off
+        http.antMatcher("/**").authorizeRequests().antMatchers("/", "/connect**", "/webjars/**", "/error**").permitAll().anyRequest()
+                .authenticated().and().exceptionHandling()
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/")).and().logout()
+                .logoutSuccessUrl("/").permitAll().and().csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+                .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+        // @formatter:on
     }
 
     private Filter ssoFilter() {
